@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arkadiusz - Unity Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,600,700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0d0d;
+    --bg2: #141414;
+    --bg3: #1a1a1a;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #f0ede6;
+    --muted: #888880;
+    --accent: #c8f060;
+    --accent2: #60f0c8;
+    --font-display: 'Cabinet Grotesk', 'Epilogue', 'DM Sans', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 5%;
+    background: rgba(13,13,13,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--accent); }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-cta {
+    font-size: 0.85rem;
+    color: var(--bg);
+    background: var(--accent);
+    padding: 0.5rem 1.2rem;
+    border-radius: 2rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s;
+  }
+
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 8rem 5% 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(200,240,96,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,240,96,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: 20%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(96,240,200,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.92rem;
+    color: var(--accent);
+    border: 0.5px solid rgba(200,240,96,0.3);
+    padding: 0.45rem 1.1rem;
+    border-radius: 2rem;
+    margin-bottom: 2rem;
+    letter-spacing: 0.04em;
+  }
+
+  .hero-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .hero h1 {
+    font-family: var(--font-body);
+    font-size: clamp(3rem, 7vw, 6rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 .line2 { color: var(--muted); }
+  .hero h1 .highlight { color: var(--accent); }
+
+  .hero-desc {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 520px;
+    margin-bottom: 2.5rem;
+    line-height: 1.7;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .stat-num {
+    font-family: var(--font-body);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .stat-num span { color: var(--accent); }
+
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--accent);
+    color: var(--bg);
+    padding: 0.85rem 1.75rem;
+    border-radius: 2rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text);
+    padding: 0.85rem 1.75rem;
+    border-radius: 2rem;
+    font-weight: 400;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border: 0.5px solid var(--border2);
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .btn-secondary:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.04); }
+
+  /* SECTIONS COMMON */
+  section { padding: 6rem 5%; }
+
+  .section-inner { max-width: 1200px; margin: 0 auto; }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: var(--font-body);
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 1rem;
+  }
+
+  .section-sub {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 500px;
+    margin-bottom: 3rem;
+  }
+
+  /* SKILLS */
+  #skills { background: var(--bg2); }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .skill-card {
+    background: var(--bg2);
+    padding: 2rem;
+    transition: background 0.2s;
+  }
+
+  .skill-card:hover { background: var(--bg3); }
+
+  .skill-icon { font-size: 1.5rem; margin-bottom: 1rem; }
+
+  .skill-title {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+  }
+
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    background: rgba(255,255,255,0.05);
+    border: 0.5px solid var(--border);
+    padding: 0.2rem 0.6rem;
+    border-radius: 0.25rem;
+  }
+
+  /* PROJECTS */
+  .projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .project-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    gap: 2rem;
+    background: var(--bg);
+    padding: 2rem 2.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.2s;
+  }
+
+  .project-row:hover { background: var(--bg3); }
+  .project-row:hover .project-arrow { transform: translate(3px, -3px); color: var(--accent); }
+
+  .project-row.has-video { display: block; }
+
+  .project-row.has-video .proj-top {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: start;
+    margin-bottom: 1.25rem;
+  }
+
+  .video-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    aspect-ratio: 16/9;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .video-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
+
+  .proj-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .proj-company {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent2);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .proj-year { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); }
+
+  .proj-platform {
+    font-size: 0.72rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 0.25rem;
+    background: rgba(96,240,200,0.08);
+    color: var(--accent2);
+    border: 0.5px solid rgba(96,240,200,0.2);
+    font-family: var(--font-mono);
+  }
+
+  .proj-highlight {
+    font-size: 0.72rem;
+    padding: 0.15rem 0.6rem;
+    border-radius: 0.25rem;
+    background: rgba(200,240,96,0.12);
+    color: var(--accent);
+    border: 0.5px solid rgba(200,240,96,0.3);
+    font-family: var(--font-mono);
+    font-weight: 500;
+  }
+
+  .proj-title {
+    font-family: var(--font-body);
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  .proj-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.6; max-width: 600px; }
+
+  .project-arrow {
+    font-size: 1.2rem;
+    color: var(--muted);
+    transition: transform 0.2s, color 0.2s;
+    margin-top: 0.25rem;
+    flex-shrink: 0;
+  }
+
+  /* ASSET STORE */
+  #assets { background: var(--bg2); }
+
+  .assets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+
+  .asset-card {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.75rem;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .asset-card:hover { border-color: rgba(200,240,96,0.3); transform: translateY(-2px); }
+
+  .asset-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+  }
+
+  .asset-badge::before { content: ''; width: 5px; height: 5px; background: var(--accent); border-radius: 50%; }
+
+  .asset-name { font-family: var(--font-body); font-size: 1.1rem; font-weight: 600; color: var(--text); }
+
+  .asset-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.6; flex: 1; }
+
+  .asset-link { font-size: 0.8rem; color: var(--accent); display: flex; align-items: center; gap: 0.3rem; font-family: var(--font-mono); margin-top: auto; }
+
+  /* CONTACT */
+  #contact {
+    text-align: center;
+    padding: 8rem 5%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .contact-glow {
+    position: absolute;
+    bottom: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(200,240,96,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .contact-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .contact-email {
+    font-family: var(--font-mono);
+    font-size: clamp(0.95rem, 2vw, 1.25rem);
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: none;
+    display: block;
+    margin: 1.5rem 0 2rem;
+    transition: opacity 0.2s;
+    text-align: center;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+
+  .contact-email:hover { opacity: 0.75; }
+
+  /* FOOTER */
+  footer {
+    border-top: 0.5px solid var(--border);
+    padding: 2rem 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-copy { font-size: 0.8rem; color: var(--muted); font-family: var(--font-mono); }
+
+  .footer-links { display: flex; gap: 1.5rem; }
+
+  .footer-links a {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--text); }
+
+  /* FADE IN */
+  .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .skills-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 4%; }
+    .nav-links { display: none; }
+    section { padding: 4rem 4%; }
+    .hero { padding: 7rem 4% 3rem; }
+    .project-row { grid-template-columns: 1fr; padding: 1.5rem; }
+    .project-row.has-video .proj-top { grid-template-columns: 1fr; }
+    footer { flex-direction: column; align-items: flex-start; padding: 1.5rem 4%; }
+    .skills-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">AR<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#assets">Asset Store</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="https://github.com/Arek7r" target="_blank" class="btn-secondary" style="padding:0.4rem 1rem; font-size:0.82rem;">GitHub ↗</a>
+  <a href="#contact" class="nav-cta">Hire me</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Open to work · Available now</div>
+    <h1>
+      Arkadiusz<br>
+      <span class="highlight">Unity Dev</span>
+    </h1>
+    <p class="hero-desc">
+      Senior Unity developer with 10 years of experience building gameplay systems,
+      tools, VR/AR experiences, and cross-platform titles — from mobile to Nintendo Switch.
+    </p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">10<span>+</span></div>
+        <div class="stat-label">Years Unity</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">5<span>+</span></div>
+        <div class="stat-label">Platforms shipped</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">50M<span>+</span></div>
+        <div class="stat-label">Game downloads</div>
+      </div>
+    </div>
+    <div class="hero-actions">
+      <a href="#assets" class="btn-primary">View Asset Store →</a>
+      <a href="#contact" class="btn-secondary">Get in touch</a>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-inner">
+    <p class="section-label fade-in">What I bring</p>
+    <h2 class="section-title fade-in">Skills & expertise</h2>
+    <p class="section-sub fade-in">Full-stack Unity development across all major features, platforms and tooling.</p>
+
+    <div class="skills-grid">
+      <div class="skill-card fade-in">
+        <div class="skill-icon">⚙️</div>
+        <div class="skill-title">Gameplay systems</div>
+        <div class="skill-tags">
+          <span class="tag">Everything</span>
+          <span class="tag">Controllers</span>
+          <span class="tag">Physics</span>
+          <span class="tag">Behaviour Tree</span>
+          <span class="tag">Reaction systems</span>
+          <span class="tag">Minigames</span>
+        </div>
+      </div>
+      <div class="skill-card fade-in">
+        <div class="skill-icon">🛠️</div>
+        <div class="skill-title">Tools & architecture</div>
+        <div class="skill-tags">
+          <span class="tag">Editor extensions</span>
+          <span class="tag">Zenject / VContainer</span>
+          <span class="tag">ECS</span>
+          <span class="tag">Addressables</span>
+          <span class="tag">UniRx / DOTween</span>
+        </div>
+      </div>
+      <div class="skill-card fade-in">
+        <div class="skill-icon">📱</div>
+        <div class="skill-title">Platforms</div>
+        <div class="skill-tags">
+          <span class="tag">Android / iOS</span>
+          <span class="tag">Nintendo Switch</span>
+          <span class="tag">PC / Steam</span>
+          <span class="tag">WebGL</span>
+          <span class="tag">Console porting</span>
+        </div>
+      </div>
+      <div class="skill-card fade-in">
+        <div class="skill-icon">🥽</div>
+        <div class="skill-title">VR / AR</div>
+        <div class="skill-tags">
+          <span class="tag">HTC Vive</span>
+          <span class="tag">Oculus</span>
+          <span class="tag">ARKit / ARCore</span>
+          <span class="tag">Vuforia</span>
+        </div>
+      </div>
+      <div class="skill-card fade-in">
+        <div class="skill-icon">⚡</div>
+        <div class="skill-title">Performance & graphics</div>
+        <div class="skill-tags">
+          <span class="tag">Profiling & optimization</span>
+          <span class="tag">Shaders (HLSL)</span>
+          <span class="tag">Draw call reduction</span>
+          <span class="tag">Blender / 3D basics</span>
+        </div>
+      </div>
+      <div class="skill-card fade-in">
+        <div class="skill-icon">🤖</div>
+        <div class="skill-title">Modern stack</div>
+        <div class="skill-tags">
+          <span class="tag">LLM integration</span>
+          <span class="tag">RAG / Vector DB</span>
+          <span class="tag">Blockchain (ThirdWeb)</span>
+          <span class="tag">Photon networking</span>
+          <span class="tag">Sentry.io</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-inner">
+    <p class="section-label fade-in">Work history</p>
+    <h2 class="section-title fade-in">Shipped projects</h2>
+    <p class="section-sub fade-in">Games and products I've built across studios over 10 years.</p>
+
+    <div class="projects-list">
+
+      <!-- LEGENDS OF ELYSIUM -->
+      <div class="project-row has-video fade-in">
+        <div class="proj-top">
+          <div>
+            <div class="proj-meta">
+              <span class="proj-company">DevChain</span>
+              <span class="proj-year">2024–25</span>
+              <span class="proj-platform">PC / Android / Steam</span>
+            </div>
+            <div class="proj-title">Legends of Elysium</div>
+            <div class="proj-desc">
+              Blockchain card game. Implemented wallet authentication (Google, Apple, MetaMask), parallel data loading orchestrator, Photon reconnect logic, in-app purchases for Steam and Google Play, and a custom in-game crypto wallet via ThirdWeb. Ported from WebGL to standalone PC and Android.
+            </div>
+            <div style="display:flex; gap:0.75rem; margin-top:1rem; flex-wrap:wrap;">
+              <a href="https://store.steampowered.com/app/3214120/Legends_of_Elysium/" target="_blank" class="btn-secondary" style="padding:0.5rem 1rem; font-size:0.8rem;">Steam ↗</a>
+              <a href="https://legendsofelysium.io/" target="_blank" class="btn-secondary" style="padding:0.5rem 1rem; font-size:0.8rem;">Website ↗</a>
+            </div>
+          </div>
+          <div class="project-arrow">↗</div>
+        </div>
+      </div>
+
+      <!-- RUSTLER -->
+      <div class="project-row has-video fade-in">
+        <div class="proj-top">
+          <div>
+            <div class="proj-meta">
+              <span class="proj-company">Game Operators</span>
+              <span class="proj-year">2020–21</span>
+              <span class="proj-platform">PC / Steam</span>
+              <span class="proj-highlight">100k+ owners on Steam</span>
+            </div>
+            <div class="proj-title">Rustler — Grand Theft Horse</div>
+            <div class="proj-desc">
+              Medieval open-world action game inspired by classic GTA. Responsible for character movement, horse riding, vehicle handling, minigames, and a full directional reaction system for combat interactions.
+            </div>
+            <div style="display:flex; gap:0.75rem; margin-top:1rem; flex-wrap:wrap;">
+              <a href="https://store.steampowered.com/app/844260/Rustler_Grand_Theft_Horse/" target="_blank" class="btn-secondary" style="padding:0.5rem 1rem; font-size:0.8rem;">Steam ↗</a>
+            </div>
+          </div>
+          <div class="project-arrow" style="color:var(--muted);">↗</div>
+        </div>
+      </div>
+
+      <!-- CAR DRIVING SCHOOL -->
+      <div class="project-row has-video fade-in">
+        <div class="proj-top">
+          <div>
+            <div class="proj-meta">
+              <span class="proj-company">Boombit</span>
+              <span class="proj-year">2021–24</span>
+              <span class="proj-platform">Android / iOS / Switch</span>
+              <span class="proj-highlight">🏆 50 million downloads</span>
+            </div>
+            <div class="proj-title">Car Driving School Simulator</div>
+            <div class="proj-desc">
+              One of Boombit's flagship titles with over 50 million downloads. Built several mini-game modules integrated directly into the main game, implemented mocap-based UI, internal designer tools, and handled porting to Nintendo Switch.
+            </div>
+            <div style="display:flex; gap:0.75rem; margin-top:1rem; flex-wrap:wrap;">
+              <a href="https://play.google.com/store/apps/details?id=com.boombitgames.DrivingSchoolParking&hl=en_US" target="_blank" class="btn-secondary" style="padding:0.5rem 1rem; font-size:0.8rem;">Google Play ↗</a>
+            </div>
+          </div>
+          <div class="project-arrow" style="color:var(--muted);">↗</div>
+        </div>
+      </div>
+
+      <!-- DRIVE WRECK & RUN -->
+      <div class="project-row has-video fade-in">
+        <div class="proj-top">
+          <div>
+            <div class="proj-meta">
+              <span class="proj-company">Boombit</span>
+              <span class="proj-year">2021–24</span>
+              <span class="proj-platform">Android / iOS</span>
+            </div>
+            <div class="proj-title">Drive, Wreck & Run</div>
+            <div class="proj-desc">
+              Prototyping, optimization, UI updates, SDK integrations and Android maintenance. Game was removed from stores by publisher.
+            </div>
+            <div style="display:flex; gap:0.75rem; margin-top:1rem; flex-wrap:wrap;">
+              <a href="https://www.youtube.com/watch?v=2AZQC9CRBMg" target="_blank" class="btn-secondary" style="padding:0.5rem 1rem; font-size:0.8rem;">YouTube ↗</a>
+            </div>
+          </div>
+          <div class="project-arrow" style="color:var(--muted);">↗</div>
+        </div>
+        <div class="video-wrap">
+          <iframe src="https://www.youtube.com/embed/2AZQC9CRBMg" allowfullscreen loading="lazy" title="Drive Wreck and Run gameplay"></iframe>
+        </div>
+      </div>
+
+      <!-- DESERT DESTRUCTION RACE -->
+      <div class="project-row has-video fade-in">
+        <div class="proj-top">
+          <div>
+            <div class="proj-meta">
+              <span class="proj-company">Boombit</span>
+              <span class="proj-year">2021–24</span>
+              <span class="proj-platform">Android / iOS</span>
+            </div>
+            <div class="proj-title">Desert Destruction Race</div>
+            <div class="proj-desc">
+              Prototyping, optimization, UI updates, SDK integrations and Android maintenance. Game was removed from stores by publisher.
+            </div>
+            <div style="display:flex; gap:0.75rem; margin-top:1rem; flex-wrap:wrap;">
+              <a href="https://www.youtube.com/watch?v=lFdW70w6a3E" target="_blank" class="btn-secondary" style="padding:0.5rem 1rem; font-size:0.8rem;">YouTube ↗</a>
+            </div>
+          </div>
+          <div class="project-arrow" style="color:var(--muted);">↗</div>
+        </div>
+        <div class="video-wrap">
+          <iframe src="https://www.youtube.com/embed/lFdW70w6a3E" allowfullscreen loading="lazy" title="Desert Destruction Race gameplay"></iframe>
+        </div>
+      </div>
+
+      <!-- PIRATES ALL ABOARD -->
+      <div class="project-row has-video fade-in">
+        <div class="proj-top">
+          <div>
+            <div class="proj-meta">
+              <span class="proj-company">QubicGames</span>
+              <span class="proj-year">2017–20</span>
+              <span class="proj-platform">Nintendo Switch</span>
+            </div>
+            <div class="proj-title">Pirates: All Aboard!</div>
+            <div class="proj-desc">
+              Lead programmer on a 2-person team. Shipped in 3 months to Nintendo Switch. Also ported 10+ additional titles to Switch at QubicGames.
+            </div>
+            <div style="display:flex; gap:0.75rem; margin-top:1rem; flex-wrap:wrap;">
+              <a href="https://www.nintendo.com/us/store/products/pirates-all-aboard-switch/" target="_blank" class="btn-secondary" style="padding:0.5rem 1rem; font-size:0.8rem;">Nintendo Store ↗</a>
+            </div>
+          </div>
+          <div class="project-arrow" style="color:var(--muted);">↗</div>
+        </div>
+        <div class="video-wrap">
+          <iframe src="https://www.youtube.com/embed/NS2WMBaCTz0" allowfullscreen loading="lazy" title="Pirates All Aboard gameplay"></iframe>
+        </div>
+      </div>
+
+      <!-- PICTORY TALE -->
+      <div class="project-row has-video fade-in">
+        <div class="proj-top">
+          <div>
+            <div class="proj-meta">
+              <span class="proj-company">Custom / AR</span>
+              <span class="proj-year">2016–20</span>
+              <span class="proj-platform">iOS / Android</span>
+            </div>
+            <div class="proj-title">Pictory Tale — AR Messenger</div>
+            <div class="proj-desc">
+              Commercial AR app similar to Snapchat. Users place 3D avatars in the real world via phone camera and record voice messages with lip-sync animation. Built with ARKit / ARCore.
+            </div>
+            <div style="display:flex; gap:0.75rem; margin-top:1rem; flex-wrap:wrap;">
+              <a href="https://www.facebook.com/pictorytaleapp/" target="_blank" class="btn-secondary" style="padding:0.5rem 1rem; font-size:0.8rem;">Facebook ↗</a>
+            </div>
+          </div>
+          <div class="project-arrow" style="color:var(--muted);">↗</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ASSET STORE -->
+<section id="assets">
+  <div class="section-inner">
+    <p class="section-label fade-in">Unity Asset Store</p>
+    <h2 class="section-title fade-in">Tools I publish</h2>
+    <p class="section-sub fade-in">Production-ready packages for Unity developers. Modular, documented, actively maintained.</p>
+
+    <div style="margin-bottom:1.5rem;" class="fade-in">
+      <a href="https://assetstore.unity.com/publishers/109617" target="_blank" class="btn-secondary">View all on Asset Store ↗</a>
+    </div>
+
+    <div class="assets-grid">
+      <a href="https://assetstore.unity.com/packages/templates/systems/weapon-system-pro-323366" target="_blank" class="asset-card fade-in">
+        <div class="asset-badge">Asset Store</div>
+        <div class="asset-name">Weapon System Pro</div>
+        <div class="asset-desc">Production-ready weapon system for Unity. Modular architecture, clean C# API, easy to integrate into any project.</div>
+        <div class="asset-link">View on Asset Store →</div>
+      </a>
+      <a href="https://assetstore.unity.com/packages/templates/systems/turret-system-pro-333894" target="_blank" class="asset-card fade-in">
+        <div class="asset-badge">Asset Store</div>
+        <div class="asset-name">Turret System Pro</div>
+        <div class="asset-desc">Flexible turret system with targeting, firing modes and full customization. Drop-in ready for tower defense, shooters and more.</div>
+        <div class="asset-link">View on Asset Store →</div>
+      </a>
+      <a href="https://assetstore.unity.com/packages/templates/systems/grid-builder-pro-338796" target="_blank" class="asset-card fade-in">
+        <div class="asset-badge">Asset Store</div>
+        <div class="asset-name">Grid Builder Pro</div>
+        <div class="asset-desc">Complete grid-based building system. Ideal for strategy, city builder and simulation games. Scalable and performant.</div>
+        <div class="asset-link">View on Asset Store →</div>
+      </a>
+      <a href="https://assetstore.unity.com/packages/tools/gui/button-pro-304100" target="_blank" class="asset-card fade-in">
+        <div class="asset-badge">Asset Store</div>
+        <div class="asset-name">Button Pro</div>
+        <div class="asset-desc">Advanced Unity UI button component with animations, states, sound hooks and full inspector control. A drop-in upgrade over the default Button.</div>
+        <div class="asset-link">View on Asset Store →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-glow"></div>
+  <div class="contact-inner">
+    <p class="section-label fade-in">Get in touch</p>
+    <h2 class="section-title fade-in" style="font-size:clamp(2.2rem,4.5vw,3.5rem);">Open to new opportunities</h2>
+    <p class="section-sub fade-in" style="margin: 0 auto 0; text-align:center;">
+      Game dev, VR/AR/XR, simulation, industrial — if you're building something in Unity, let's talk.
+    </p>
+    <a href="mailto:ArkadiuszRJobs@gmail.com" class="contact-email fade-in">ArkadiuszRJobs@gmail.com</a>
+    <div class="hero-actions fade-in" style="justify-content: center;">
+      <a href="https://assetstore.unity.com/publishers/109617" target="_blank" class="btn-secondary">Asset Store ↗</a>
+      <a href="https://github.com/Arek7r" target="_blank" class="btn-secondary">GitHub ↗</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-copy">© 2025 Arkadiusz</div>
+  <div class="footer-links">
+    <a href="mailto:ArkadiuszRJobs@gmail.com">Email</a>
+    <a href="https://assetstore.unity.com/publishers/109617" target="_blank">Asset Store</a>
+    <a href="https://github.com/Arek7r" target="_blank">GitHub</a>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
